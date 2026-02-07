@@ -1,0 +1,37 @@
+{
+    "title": "Matterbridge SwitchBot Curtain plugin",
+    "description": "matterbridge-switchbot-curtain v1.0.0 by lltcggie",
+    "type": "object",
+    "required": [],
+    "properties": {
+        "name": {
+            "description": "Plugin name",
+            "type": "string",
+            "readOnly": true
+        },
+        "type": {
+            "description": "Plugin type",
+            "type": "string",
+            "readOnly": true
+        },
+        "switchBotDeviceAddresses": {
+            "description": "Addresses of SwitchBot devices",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true,
+            "selectEntityFrom": "name"
+        },
+        "debug": {
+            "description": "Enable the debug for the plugin (development only)",
+            "type": "boolean",
+            "default": false
+        },
+        "unregisterOnShutdown": {
+            "description": "Unregister all devices on shutdown (development only)",
+            "type": "boolean",
+            "default": false
+        }
+    }
+}

@@ -1,0 +1,61 @@
+name: Publish to npm
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '24.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Clean cache
+        run: npm cache clean --force
+
+      - name: Verify Node.js version
+        run: node -v
+
+      - name: Verify Npm version
+        run: npm -v
+
+      - name: Clone matterbridge repo
+        run: git clone --depth 1 --single-branch --no-tags https://github.com/Luligu/matterbridge.git ../matterbridge
+
+      - name: Install matterbridge dependencies
+        working-directory: ../matterbridge
+        run: npm ci --no-fund --no-audit
+
+      - name: Build matterbridge
+        working-directory: ../matterbridge
+        run: npm run build
+
+      - name: Link matterbridge globally
+        working-directory: ../matterbridge
+        run: npm link --no-fund --no-audit
+
+      - name: Install plugin dependencies
+        run: npm ci
+
+      - name: Link matterbridge in the project
+        run: npm link matterbridge
+
+      - name: Lint the plugin
+        run: npm run lint
+
+      - name: Build the plugin
+        run: npm run build
+
+      - name: Publish the plugin to npm
+        run: npm publish --provenance --access public
